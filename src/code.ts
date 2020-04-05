@@ -1,30 +1,27 @@
-import { Observable } from 'rxjs';
-
-var observable = Observable.create((observer:any) => {
-    try {
-        observer.next('Hello')
-        observer.next('World')
-        setInterval(() => {
-            observer.next('I am good')
-        }, 2000)
-    } catch(err) {
-        observer.error(err)
-    }
-}); 
-
-//arrow function in place of traditional function()
-//observer read values from observable
-var observer = observable.subscribe(
-    (x:any) => addItem(x),
-    (err:any) => addItem('error'),
-    () => addItem('completed')    
-);
-
-setTimeout(() => {
-    observer.unsubscribe()
-}, 6000)
+import { BehaviorSubject } from 'rxjs';
 
 
+var subject =  new BehaviorSubject('First')
+
+subject.subscribe(
+    data => addItem('Observable 1:' + data),
+    err => addItem(err),
+    () => addItem('Observer 1 completed')
+)
+
+subject.next("1st sent")
+subject.next('Observer 2 subscribing !')
+
+var observer2 = subject.subscribe(
+     data => addItem('Observer 2:' + data)
+)
+
+subject.next("2nd sent");
+subject.next("3rd sent");
+
+observer2.unsubscribe();
+
+subject.next("final sent");
 
 function addItem(val:any) {
     var node = document.createElement("li");
